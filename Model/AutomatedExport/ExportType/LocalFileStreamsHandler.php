@@ -118,7 +118,7 @@ class LocalFileStreamsHandler extends DataObject implements StreamHandlerInterfa
     /**
      * @throws FileSystemException
      */
-    public function exportReportChunk(array $dataToWrite, string $rowType = null)
+    public function exportReportChunk(array $dataToWrite, ?string $rowType = null)
     {
         foreach ($this->exportStreams as $exportStream) {
             switch ($exportStream->getFileType()) {
