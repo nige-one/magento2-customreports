@@ -42,8 +42,8 @@ class CustomReport extends AbstractModel implements CustomReportInterface, Ident
         Context $context,
         Registry $registry,
         GenericReportCollectionFactory $genericReportCollectionFactory,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);

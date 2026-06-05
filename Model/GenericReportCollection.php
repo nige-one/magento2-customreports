@@ -28,8 +28,8 @@ class GenericReportCollection extends AbstractDb
         EntityFactoryInterface $entityFactory,
         Logger $logger,
         FetchStrategyInterface $fetchStrategy,
-        AdapterInterface $connection = null,
-        ResourceConnection $resourceConnection = null
+        ?AdapterInterface $connection = null,
+        ?ResourceConnection $resourceConnection = null
     ) {
         $resourceConnection = $resourceConnection ?: ObjectManager::getInstance()->get(ResourceConnection::class);
 
