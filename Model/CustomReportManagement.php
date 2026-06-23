@@ -41,6 +41,24 @@ class CustomReportManagement implements CustomReportManagementInterface
         return array_keys($firstItem->getData());
     }
 
+    public function getColumnTypes(CustomReportInterface $customReport): array
+    {
+        preg_match_all('~/\*(.*?)\*/~s', $customReport->getReportSql(), $commentMatches);
+
+        $result = [];
+        foreach ($commentMatches[1] as $comment) {
+            foreach (explode(',', $comment) as $columnType) {
+                if (!str_contains($columnType, ':')) {
+                    continue;
+                }
+                [$column, $type] = explode(':', $columnType, 2);
+                $result[trim($column)] = trim($type);
+            }
+        }
+
+        return $result;
+    }
+
     protected function formatSql(string $rawSql): string
     {
         return trim($rawSql, ";\r\n");

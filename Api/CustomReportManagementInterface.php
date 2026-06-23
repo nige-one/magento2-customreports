@@ -19,4 +19,12 @@ interface CustomReportManagementInterface
      * @return string[]
      */
     public function getColumnsList(CustomReportInterface $customReport, bool $filtersPresent): array;
+
+    /**
+     * Parse per-column grid types from a "/* Column:type,... *\/" annotation comment in the report SQL.
+     *
+     * @param CustomReportInterface $customReport
+     * @return string[]
+     */
+    public function getColumnTypes(CustomReportInterface $customReport): array;
 }
