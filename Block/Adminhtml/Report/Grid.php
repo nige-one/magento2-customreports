@@ -48,17 +48,19 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
         $this->_preparePage();
         $filtersPresent = ($this->getParam($this->getVarNameFilter()) || $this->getParam($this->getVarNameSort()));
         $columnList = $this->customReportManagement->getColumnsList($currentCustomReport, $filtersPresent);
-        $this->addColumnSet($columnList);
+        $columnTypes = $this->customReportManagement->getColumnTypes($currentCustomReport);
+        $this->addColumnSet($columnList, $columnTypes);
         $this->addGridExportBlock();
         parent::_prepareLayout();
     }
 
     /**
      * @param $columnList
+     * @param array $columnTypes
      *
      * @return void
      */
-    public function addColumnSet($columnList)
+    public function addColumnSet($columnList, array $columnTypes = [])
     {
         /** @var ColumnSet $columnSet */
         $columnSet = $this->getChildBlock('deg_customreports_grid.grid.columnSet');
@@ -74,7 +76,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
                     'header' => $columnName,
                     'index' => $columnName,
                     'filter_index' => new Zend_Db_Expr($escapedColumName),
-                    'type' => 'text',
+                    'type' => $columnTypes[$columnName] ?? 'text',
                 ],
             ];
             $column = $this->_layout->createBlock(
