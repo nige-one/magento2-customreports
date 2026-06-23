@@ -32,7 +32,7 @@ class ExportReportService implements ExportReportServiceInterface
      * @param AutomatedExportInterface $automatedExport
      * @return void
      */
-    public function exportAll(AutomatedExportInterface $automatedExport): void
+    public function exportAll(AutomatedExportInterface $automatedExport, array $reportCollections = []): void
     {
         $customReportIds = $automatedExport->getCustomreportIds();
         $handlers = $this->exportTypeHandlerPool->getHandlerInstances($automatedExport);
@@ -60,7 +60,8 @@ class ExportReportService implements ExportReportServiceInterface
                     $handler->exportReportHeaders();
                 }
 
-                $reportCollection = $this->customReportManagement->getGenericReportCollection($customReport);
+                $reportCollection = $reportCollections[$customReportId]
+                    ?? $this->customReportManagement->getGenericReportCollection($customReport);
                 foreach ($reportCollection as $reportRow) {
                     foreach ($handlers as $handler) {
                         $handler->exportReportChunk($reportRow->getData());
