@@ -8,7 +8,9 @@ use DEG\CustomReports\Api\CustomReportManagementInterface;
 use DEG\CustomReports\Api\ExportReportServiceInterface;
 use DEG\CustomReports\Api\SendErrorEmailServiceInterface;
 use DEG\CustomReports\Model\AutomatedExport\ExportType\StreamHandlerPoolInterface;
+use DEG\CustomReports\Model\Export\RowFormatter;
 use Exception;
+use Magento\Framework\Data\Collection\AbstractDb;
 use Psr\Log\LoggerInterface;
 
 class ExportReportService implements ExportReportServiceInterface
@@ -18,7 +20,8 @@ class ExportReportService implements ExportReportServiceInterface
         protected CustomReportManagementInterface $customReportManagement,
         protected StreamHandlerPoolInterface $exportTypeHandlerPool,
         protected SendErrorEmailServiceInterface $sendErrorEmailService,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
+        protected RowFormatter $rowFormatter
     ) {
     }
 
@@ -30,6 +33,7 @@ class ExportReportService implements ExportReportServiceInterface
      * on that single query, despite the code being less intuitive/harder to follow.
      *
      * @param AutomatedExportInterface $automatedExport
+     * @param AbstractDb[] $reportCollections
      * @return void
      */
     public function exportAll(AutomatedExportInterface $automatedExport, array $reportCollections = []): void
@@ -62,9 +66,11 @@ class ExportReportService implements ExportReportServiceInterface
 
                 $reportCollection = $reportCollections[$customReportId]
                     ?? $this->customReportManagement->getGenericReportCollection($customReport);
+                $formatColumns = $this->rowFormatter->getColumns($customReport);
                 foreach ($reportCollection as $reportRow) {
+                    $rowData = $this->rowFormatter->format($reportRow, $formatColumns);
                     foreach ($handlers as $handler) {
-                        $handler->exportReportChunk($reportRow->getData());
+                        $handler->exportReportChunk($rowData);
                     }
                 }
 
